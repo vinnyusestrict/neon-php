@@ -7,12 +7,12 @@
  * Authored by Colin Pizarek
  * http://github.com/colinpizarek
  */
- 
-session_start();
-$_SESSION['neonSession'] = null;
 
 class Neon 
 {
+    // WP Transient key
+    const session_key = '_neonSession';
+    
   /*
    * Abstracted HTTP request, used by other class methods
    */
@@ -35,19 +35,17 @@ class Neon
   /*
    * Retrieves the session ID
    */
-  private function getSession() {
-    if (isset($_SESSION['neonSession'])) {
-      return $_SESSION['neonSession'];
-    } else {
-      return null;
-    }
+  public function getSession() {
+      
+    return get_transient( self::session_key );
   }
   
   /*
    * Saves the session ID
    */
   private function setSession($session) {
-    $_SESSION['neonSession'] = $session;
+      
+      set_transient( self::session_key, $session, 25 * 60 ); // 25 minutes
   }
   
   /*
